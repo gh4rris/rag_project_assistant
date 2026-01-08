@@ -8,12 +8,13 @@ from nltk.stem import PorterStemmer
 
 
 class Section(BaseModel):
-    id: str
+    id: int
+    label: str
     content: str | list[str] | dict[str, Any]
     type: str
 
 class Project(BaseModel):
-    project_name: str
+    name: str
     repo_url: str
     sections: list[Section]
 
