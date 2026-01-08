@@ -33,3 +33,10 @@ def tokenize_text(text: str) -> list[str]:
     filtered_words = [word for word in text.split() if word not in stop_words]
     stemmer = PorterStemmer()
     return [stemmer.stem(word) for word in filtered_words]
+
+def format_section_content(section: Section) -> str:
+    if section.type == "text":
+        return section.content
+    if section.type == "list":
+        return "\n".join(section.content)
+    return ""
