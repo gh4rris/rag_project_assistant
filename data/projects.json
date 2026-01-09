@@ -107,7 +107,7 @@
                     ["GET /api/events/{eventID}/users", "Returns a list of the attendees (users) of a specific event"],
                     ["GET /api/events/{eventID}/posts", "Returns a list of an events posts"]
                 ],
-                "type": "list"
+                "type": "instructions"
             },
             {
                 "id": 12,

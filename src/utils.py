@@ -10,7 +10,7 @@ from nltk.stem import PorterStemmer
 class Section(BaseModel):
     id: int
     label: str
-    content: str | list[str] | dict[str, Any]
+    content: str | list[str] | list[list[str]] | dict[str, Any]
     type: str
 
 class Project(BaseModel):
@@ -20,7 +20,8 @@ class Project(BaseModel):
 
 def load_projects() -> list[Project]:
     with open(PROJECTS, "r") as f:
-        return json.load(f)
+        data = json.load(f)
+    return [Project(**project) for project in data]
 
 def load_stop_words() -> list[str]:
     with open(STOP_WORDS, "r") as f:
@@ -39,4 +40,7 @@ def format_section_content(section: Section) -> str:
         return section.content
     if section.type == "list":
         return "\n".join(section.content)
+    if section.type == "instructions":
+        groups = ["\n".join(group) for group in section.content]
+        return "\n\n".join(groups)
     return ""

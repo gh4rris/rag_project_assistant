@@ -1,7 +1,9 @@
 from src.utils import Project, Section, load_projects, tokenize_text, format_section_content
-from config import BM25_K1, BM25_B, RESULT_LIMIT
+from config import CACHE, BM25_K1, BM25_B, RESULT_LIMIT
 
+import os
 import math
+import pickle
 from collections import defaultdict, Counter
 
 
@@ -9,21 +11,27 @@ class InvertedIndex:
     index: defaultdict[str, set[int]]
     project_map: dict[int, int]
     section_map: dict[int, Section]
-    term_frequencies: defaultdict[int, Counter]
+    token_frequencies: defaultdict[int, Counter]
     section_lengths: dict[int, int]
 
     def __init__(self) -> None:
         self.index = defaultdict(set) # mapping tokens to sets of Section IDs
         self.project_map = {} # mapping Section IDs to their Project index
         self.section_map = {} # mapping Section IDs to Section object
-        self.term_frequencies = defaultdict(Counter) # mapping Section IDs to token Counter
+        self.token_frequencies = defaultdict(Counter) # mapping Section IDs to token Counter
         self.section_lengths = {} # mapping Section IDs to their token length
+
+        self.__index_path = os.path.join(CACHE, "index.pkl")
+        self.__project_map_path = os.path.join(CACHE, "project_map.pkl")
+        self.__section_map_path = os.path.join(CACHE, "section_map.pkl")
+        self.__token_frequencies = os.path.join(CACHE, "token_frequencies.pkl")
+        self.__section_lengths = os.path.join(CACHE, "section_lengths.pkl")
 
     def __add_section(self, id: int, text: str) -> None:
         tokenized_text = tokenize_text(text)
         for token in set(tokenized_text):
             self.index[token].add(id)
-        self.term_frequencies[id].update(tokenized_text)
+        self.token_frequencies[id].update(tokenized_text)
         self.section_lengths[id] = len(tokenized_text)
 
     def __avg_section_length(self) -> float:
@@ -35,7 +43,7 @@ class InvertedIndex:
         section_length = self.section_lengths.get(id, 0)
         avg_section_length = self.__avg_section_length()
         length_norm = (1 - b) + (b * (section_length / avg_section_length)) if avg_section_length > 0 else 1
-        tf = self.term_frequencies.get(id, Counter())[token]
+        tf = self.token_frequencies.get(id, Counter())[token]
         return (tf * (k1 + 1)) / (tf + (k1 * length_norm))
     
     def __get_bm25_idf(self, token: str) -> float:
@@ -61,13 +69,14 @@ class InvertedIndex:
         for id, score in sorted_scores[:limit]:
             project = projects[self.project_map[id]]
             section = self.section_map[id]
+            content = format_section_content(section)
             results.append(
                 {
                     "project": project.name,
                     "url": project.repo_url,
                     "id": section.id,
                     "label": section.label,
-                    "content": section.content,
+                    "content": content,
                     "type": section.type,
                     "score": score
                 }
@@ -84,3 +93,28 @@ class InvertedIndex:
                     continue
                 content = format_section_content(section)
                 self.__add_section(section.id, content)
+
+    def save(self) -> None:
+        os.makedirs(CACHE, exist_ok=True)
+        with open(self.__index_path, "wb") as f:
+            pickle.dump(self.index, f)
+        with open(self.__project_map_path, "wb") as f:
+            pickle.dump(self.project_map, f)
+        with open(self.__section_map_path, "wb") as f:
+            pickle.dump(self.section_map, f)
+        with open(self.__token_frequencies, "wb") as f:
+            pickle.dump(self.token_frequencies, f)
+        with open(self.__section_lengths, "wb") as f:
+            pickle.dump(self.section_lengths, f)
+
+    def load(self) -> None:
+        with open(self.__index_path, "rb") as f:
+            self.index = pickle.load(f)
+        with open(self.__project_map_path, "rb") as f:
+            self.project_map = pickle.load(f)
+        with open(self.__section_map_path, "rb") as f:
+            self.section_map = pickle.load(f)
+        with open(self.__token_frequencies, "rb") as f:
+            self.token_frequencies = pickle.load(f)
+        with open(self.__section_lengths, "rb") as f:
+            self.section_lengths = pickle.load(f)

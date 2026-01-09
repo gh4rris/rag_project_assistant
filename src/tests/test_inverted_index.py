@@ -40,6 +40,12 @@ def inverted_index_mock(mocker: MockerFixture) -> InvertedIndex:
                         "my_code": ["git clone repo", "cd project"]
                     },
                     type="code"
+                ),
+                Section(
+                    id=4,
+                    label="Second section",
+                    content=[["one", "two"], ["three", "four"]],
+                    type="instructions"
                 )
             ]
         )
@@ -53,10 +59,11 @@ def test_build(inverted_index_mock: InvertedIndex):
     assert inverted_index_mock.project_map[1] == 0, "Section ID 1 is Project index 0"
     assert inverted_index_mock.project_map[2] == 0, "Section ID 2 is Project index 0"
     assert inverted_index_mock.project_map[3] == 1, "Section ID 3 is Project index 1"
+    assert inverted_index_mock.project_map[4] == 1, "Section ID 4 is Project index 1"
     assert inverted_index_mock.section_map[2].label == "Second section", "Section mapping"
     assert inverted_index_mock.index["mock"] == {1}, "Mock keyword in section 1 only"
-    assert len(inverted_index_mock.term_frequencies) == 2, "Term frequencies for 2 sections"
-    assert len(inverted_index_mock.section_lengths) == 2, "Token lengths for 2 sections"
+    assert len(inverted_index_mock.token_frequencies) == 3, "Token frequencies for 3 sections"
+    assert len(inverted_index_mock.section_lengths) == 3, "Token lengths for 3 sections"
 
 def test_bm25_search(inverted_index_mock: InvertedIndex):
     results = inverted_index_mock.bm25_search("mock", limit=2)
