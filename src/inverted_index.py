@@ -1,5 +1,5 @@
 from src.utils import Project, Section, load_projects, tokenize_text, format_section_content
-from config import BM25_K1, BM25_B
+from config import BM25_K1, BM25_B, RESULT_LIMIT
 
 import math
 from collections import defaultdict, Counter
@@ -44,10 +44,10 @@ class InvertedIndex:
     
     def __bm25(self, id: int, token: str) -> float:
         tf = self.__get_bm25_tf(id, token)
-        idf = self.__get_bm25_idf(id, token)
+        idf = self.__get_bm25_idf(token)
         return tf * idf
     
-    def bm25_search(self, query: str, limit: int) -> list[dict]:
+    def bm25_search(self, query: str, limit: int=RESULT_LIMIT) -> list[dict]:
         tokenized_query = tokenize_text(query)
         bm25_scores = {}
         for id in self.section_map:
@@ -63,12 +63,12 @@ class InvertedIndex:
             section = self.section_map[id]
             results.append(
                 {
-                    "project": project["name"],
-                    "url": project["repo_url"],
-                    "id": section["id"],
-                    "label": section["label"],
-                    "content": section["content"],
-                    "type": section["type"],
+                    "project": project.name,
+                    "url": project.repo_url,
+                    "id": section.id,
+                    "label": section.label,
+                    "content": section.content,
+                    "type": section.type,
                     "score": score
                 }
             )

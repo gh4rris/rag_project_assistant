@@ -9,3 +9,4 @@ STOP_WORDS = os.path.join(DATA, "stopwords.txt")
 # InvertedIndex parameters
 BM25_K1 = 1.5
 BM25_B = 0.75
+RESULT_LIMIT = 5
