@@ -1,4 +1,4 @@
-from src.utils import Project, Section, load_projects, tokenize_text, format_section_content
+from src.utils import Section, load_projects, tokenize_text, format_section_content
 from config import CACHE, BM25_K1, BM25_B, RESULT_LIMIT
 
 import os
@@ -7,7 +7,7 @@ import pickle
 from collections import defaultdict, Counter
 
 
-class InvertedIndex:
+class KeywordSearch:
     index: defaultdict[str, set[int]]
     project_map: dict[int, int]
     section_map: dict[int, Section]

@@ -1,0 +1,33 @@
+name: Python application - CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v6
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v6
+      with:
+        python-version-file: ".python-version"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v7
+      with: 
+        version: 0.8.15
+
+    - name: Install the Project
+      run: uv sync --locked --all-extras --dev
+
+    - name: Run unit tests
+      run: uv run pytest src/tests/*
+
+    - name: Lint with Ruff
+      run: uv run ruff check

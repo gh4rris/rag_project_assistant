@@ -1,15 +1,15 @@
-from src.inverted_index import InvertedIndex
+from src.keyword_search import KeywordSearch
 
 
 def main():
-    inverted_index = InvertedIndex()
+    keyword_search = KeywordSearch()
     try:
-        inverted_index.load()
+        keyword_search.load()
     except FileNotFoundError:
-        inverted_index.build()
-        inverted_index.save()
+        keyword_search.build()
+        keyword_search.save()
 
-    results = inverted_index.bm25_search("Supervised learning project")
+    results = keyword_search.bm25_search("Supervised learning project")
     
     for result in results:
         print(f"Project: {result["project"]}")

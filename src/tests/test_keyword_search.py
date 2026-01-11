@@ -1,4 +1,4 @@
-from inverted_index import InvertedIndex
+from keyword_search import KeywordSearch
 from utils import Project, Section
 
 import pytest
@@ -6,9 +6,9 @@ from pytest_mock import MockerFixture
 
 
 @pytest.fixture
-def inverted_index_mock(mocker: MockerFixture) -> InvertedIndex:
-    inverted_index = InvertedIndex()
-    mock_projects = mocker.patch("inverted_index.load_projects")
+def keyword_search_mock(mocker: MockerFixture) -> KeywordSearch:
+    keyword_search = KeywordSearch()
+    mock_projects = mocker.patch("keyword_search.load_projects")
 
     mock_projects.return_value = [
         Project(
@@ -51,22 +51,22 @@ def inverted_index_mock(mocker: MockerFixture) -> InvertedIndex:
         )
     ]
 
-    inverted_index.build()
-    return inverted_index
+    keyword_search.build()
+    return keyword_search
 
 
-def test_build(inverted_index_mock: InvertedIndex):
-    assert inverted_index_mock.project_map[1] == 0, "Section ID 1 is Project index 0"
-    assert inverted_index_mock.project_map[2] == 0, "Section ID 2 is Project index 0"
-    assert inverted_index_mock.project_map[3] == 1, "Section ID 3 is Project index 1"
-    assert inverted_index_mock.project_map[4] == 1, "Section ID 4 is Project index 1"
-    assert inverted_index_mock.section_map[2].label == "Second section", "Section mapping"
-    assert inverted_index_mock.index["mock"] == {1}, "Mock keyword in section 1 only"
-    assert len(inverted_index_mock.token_frequencies) == 3, "Token frequencies for 3 sections"
-    assert len(inverted_index_mock.section_lengths) == 3, "Token lengths for 3 sections"
+def test_build(keyword_search_mock: KeywordSearch):
+    assert keyword_search_mock.project_map[1] == 0, "Section ID 1 is Project index 0"
+    assert keyword_search_mock.project_map[2] == 0, "Section ID 2 is Project index 0"
+    assert keyword_search_mock.project_map[3] == 1, "Section ID 3 is Project index 1"
+    assert keyword_search_mock.project_map[4] == 1, "Section ID 4 is Project index 1"
+    assert keyword_search_mock.section_map[2].label == "Second section", "Section mapping"
+    assert keyword_search_mock.index["mock"] == {1}, "Mock keyword in section 1 only"
+    assert len(keyword_search_mock.token_frequencies) == 3, "Token frequencies for 3 sections"
+    assert len(keyword_search_mock.section_lengths) == 3, "Token lengths for 3 sections"
 
-def test_bm25_search(inverted_index_mock: InvertedIndex):
-    results = inverted_index_mock.bm25_search("mock", limit=2)
+def test_bm25_search(keyword_search_mock: KeywordSearch):
+    results = keyword_search_mock.bm25_search("mock", limit=2)
     
     assert len(results) == 2, "Length of results set by limit"
     assert results[0]["project"] == "First project", "keyword returns best result"
