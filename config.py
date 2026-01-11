@@ -7,7 +7,12 @@ PROJECTS = os.path.join(DATA, "projects.json")
 STOP_WORDS = os.path.join(DATA, "stopwords.txt")
 CACHE = os.path.join(ROOT_PATH, "cache")
 
-# InvertedIndex parameters
+# KeywordSearch parameters
 BM25_K1 = 1.5
 BM25_B = 0.75
 RESULT_LIMIT = 5
+
+# Semanticsearch parameters
+SEMANTIC_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+CHUNK_SIZE = 4
+OVERLAP = 1

@@ -1,4 +1,5 @@
 from src.keyword_search import KeywordSearch
+from src.semantic_search import SemanticSearch
 
 
 def main():
