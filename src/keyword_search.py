@@ -1,4 +1,4 @@
-from src.utils import Section, load_projects, tokenize_text, format_section_content
+from src.utils import Project, Section, tokenize_text, format_section_content
 from config import CACHE, BM25_K1, BM25_B, RESULT_LIMIT
 
 import os
@@ -9,14 +9,14 @@ from collections import defaultdict, Counter
 
 class KeywordSearch:
     index: defaultdict[str, set[int]]
-    project_map: dict[int, int]
+    project_map: dict[int, dict]
     section_map: dict[int, Section]
     token_frequencies: defaultdict[int, Counter]
     section_lengths: dict[int, int]
 
     def __init__(self) -> None:
         self.index = defaultdict(set) # mapping tokens to sets of Section IDs
-        self.project_map = {} # mapping Section IDs to their Project index
+        self.project_map = {} # mapping Section IDs to their project data
         self.section_map = {} # mapping Section IDs to Section object
         self.token_frequencies = defaultdict(Counter) # mapping Section IDs to token Counter
         self.section_lengths = {} # mapping Section IDs to their token length
@@ -64,16 +64,16 @@ class KeywordSearch:
                 score += self.__bm25(id, token)
             bm25_scores[id] = score
         sorted_scores = sorted(bm25_scores.items(), key=lambda x: x[1], reverse=True)
-        projects = load_projects()
+
         results = []
         for id, score in sorted_scores[:limit]:
-            project = projects[self.project_map[id]]
+            project = self.project_map[id]
             section = self.section_map[id]
             content = format_section_content(section)
             results.append(
                 {
-                    "project": project.name,
-                    "url": project.repo_url,
+                    "project": project["name"],
+                    "url": project["url"],
                     "id": section.id,
                     "label": section.label,
                     "content": content,
@@ -83,11 +83,13 @@ class KeywordSearch:
             )
         return results
     
-    def build(self) -> None:
-        projects = load_projects()
-        for i, project in enumerate(projects):
+    def build(self, projects: list[Project]) -> None:
+        for project in projects:
             for section in project.sections:
-                self.project_map[section.id] = i
+                self.project_map[section.id] = {
+                    "name": project.name,
+                    "url": project.repo_url
+                }
                 self.section_map[section.id] = section
                 if section.type == "code":
                     continue
