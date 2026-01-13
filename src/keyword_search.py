@@ -1,5 +1,5 @@
 from src.utils import Project, Section, tokenize_text, format_section_content
-from config import CACHE, BM25_K1, BM25_B, RESULT_LIMIT
+from config import CACHE, BM25_K1, BM25_B
 
 import os
 import math
@@ -80,7 +80,8 @@ class KeywordSearch:
     def build(self, projects: list[Project]) -> None:
         for project in projects:
             for section in project.sections:
-                if section.type == "code": continue
+                if section.type == "code":
+                    continue
                 content = format_section_content(section)
                 self._add_section(section.id, content)
 

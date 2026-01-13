@@ -1,5 +1,5 @@
 from src.utils import Project, Section, format_section_content
-from config import CACHE, SEMANTIC_MODEL, CHUNK_SIZE, OVERLAP, RESULT_LIMIT
+from config import CACHE, SEMANTIC_MODEL, CHUNK_SIZE, OVERLAP
 
 import re
 import os
@@ -95,7 +95,8 @@ class SemanticSearch:
         metadata = []
         for project in projects:
             for section in project.sections:
-                if section.type == "code": continue
+                if section.type == "code":
+                    continue
                 content = format_section_content(section)
                 content_chunks = self._semantic_chunk(content)
                 for i, chunk in enumerate(content_chunks):
