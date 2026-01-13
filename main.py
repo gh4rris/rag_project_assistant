@@ -1,24 +1,26 @@
-from src.keyword_search import KeywordSearch
+from src.hybrid_search import HybridSearch
 
 
 def main():
-    keyword_search = KeywordSearch()
+    hybrid_search = HybridSearch()
     try:
-        keyword_search.load()
+        hybrid_search.load()
     except FileNotFoundError:
-        keyword_search.build()
-        keyword_search.save()
+        hybrid_search.build()
+        hybrid_search.save()
 
-    results = keyword_search.bm25_search("Supervised learning project")
+    results = hybrid_search.rrf_search("What's the maximum size profile image that can be uploaded?")
     
     for result in results:
         print(f"Project: {result["project"]}")
         print(f"Repo URL: {result["url"]}")
         print(f"Section ID: {result["id"]}")
         print(f"Label: {result["label"]}")
-        print(f"Content: {result["content"][:80]}...")
+        print(f"Content: {result["content"][:120]}...")
         print(f"Type: {result["type"]}")
-        print(f"Score: {result["score"]:.2f}\n")
+        print(f"BM25 Rank: {result["bm25_rank"]}")
+        print(f"Semantic Rank: {result["semantic_rank"]}")
+        print(f"RRF Score: {result["rrf_score"]:.2f}\n")
 
 
 if __name__ == "__main__":

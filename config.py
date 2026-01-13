@@ -18,10 +18,7 @@ OVERLAP = 1
 
 # HybridSearch parameters
 RRF_K = 60
+LIMIT_MULTIPLYER = 2
 
 # General
 RESULT_LIMIT = 5
-
-x = {7: {"id": 7, "score": 20}, 3: {"id": 3, "score": 13}, 19: {"id": 19, "score": 14}}
-y = sorted(x.values(), key=lambda x: x["score"], reverse=True)
-print(y)
