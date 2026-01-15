@@ -39,7 +39,7 @@ def format_section_content(section: Section) -> str:
     if section.type == "text":
         return section.content
     if section.type == "list":
-        return "\n".join(section.content)
+        return "- " + "\n- ".join(section.content)
     if section.type == "instructions":
         groups = ["\n".join(group) for group in section.content]
         return "\n\n".join(groups)

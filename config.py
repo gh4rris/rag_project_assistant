@@ -21,4 +21,7 @@ RRF_K = 60
 LIMIT_MULTIPLYER = 2
 
 # General
-RESULT_LIMIT = 5
+RESULT_LIMIT = 2
+
+# LLM
+MODEL = "mistralai/mistral-7b-instruct:free"

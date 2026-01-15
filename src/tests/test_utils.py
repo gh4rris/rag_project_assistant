@@ -24,7 +24,7 @@ def test_tokenize_text():
         content=["text 1", "text 2"],
         type="list"
         ),
-        "text 1\ntext 2"
+        "- text 1\n- text 2"
     ),
     (
         Section(
