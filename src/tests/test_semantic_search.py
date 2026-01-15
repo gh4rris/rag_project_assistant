@@ -42,9 +42,11 @@ def test_split_sentences(text, expected, semantic_search: SemanticSearch):
 
 def test_semantic_chunk(semantic_search: SemanticSearch):
     sentences = "First. Second. Third! Fourth? Fith! Sixth! Seventh?"
+    word = "word"
     assert semantic_search._semantic_chunk(sentences, 3, 1) == ["First. Second. Third!", "Third! Fourth? Fith!", "Fith! Sixth! Seventh?"]
     assert semantic_search._semantic_chunk(sentences, 4, 1) == ["First. Second. Third! Fourth?", "Fourth? Fith! Sixth! Seventh?"]
     assert semantic_search._semantic_chunk(sentences, 4, 2) == ["First. Second. Third! Fourth?", "Third! Fourth? Fith! Sixth!", "Fith! Sixth! Seventh?"]
+    assert semantic_search._semantic_chunk(word, 4, 1) == ["word"]
     
 def test_cosine_similarity(semantic_search: SemanticSearch):
     vec1 = np.array([1, 2, 3], dtype=float32)

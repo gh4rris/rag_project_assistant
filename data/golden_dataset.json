@@ -1,0 +1,14 @@
+[
+    {
+        "question": "What's the maximum size profile image that can be uploaded?",
+        "relevant_sections": [7]
+    },
+    {
+        "question": "What's the API instruction to create a post on a users profile?",
+        "relevant_sections": [11]
+    },
+    {
+        "question": "Give me a summary of the available projects",
+        "relevant_sections": [1, 6, 13]
+    }
+]

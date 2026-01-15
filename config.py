@@ -5,6 +5,7 @@ ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
 DATA = os.path.join(ROOT_PATH, "data")
 PROJECTS = os.path.join(DATA, "projects.json")
 STOP_WORDS = os.path.join(DATA, "stopwords.txt")
+GOLDEN_DATASET = os.path.join(DATA, "golden_dataset.json")
 CACHE = os.path.join(ROOT_PATH, "cache")
 
 # KeywordSearch parameters
@@ -21,7 +22,7 @@ RRF_K = 60
 LIMIT_MULTIPLYER = 2
 
 # General
-RESULT_LIMIT = 2
+RESULT_LIMIT = 5
 
 # LLM
 MODEL = "mistralai/mistral-7b-instruct:free"

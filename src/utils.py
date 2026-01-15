@@ -1,4 +1,4 @@
-from config import PROJECTS, STOP_WORDS
+from config import PROJECTS, STOP_WORDS, GOLDEN_DATASET
 
 import json
 import string
@@ -26,6 +26,10 @@ def load_projects() -> list[Project]:
 def load_stop_words() -> list[str]:
     with open(STOP_WORDS, "r") as f:
         return f.read().splitlines()
+    
+def load_golden_dataset() -> list[dict]:
+    with open(GOLDEN_DATASET, "r") as f:
+        return json.load(f)
 
 def tokenize_text(text: str) -> list[str]:
     text = text.lower()

@@ -1,5 +1,5 @@
 from config import RRF_K, RESULT_LIMIT, CACHE, LIMIT_MULTIPLYER
-from src.utils import load_projects, Project, Section
+from src.utils import load_projects, load_golden_dataset, Project, Section
 from src.keyword_search import KeywordSearch
 from src.semantic_search import SemanticSearch
 
@@ -63,6 +63,27 @@ class HybridSearch:
                 self.section_map[section.id] = section
         self.keyword_search.build(projects)
         self.semantic_search.build(projects)
+
+    def evaluate(self) -> dict[str, dict]:
+        golden_dataset = load_golden_dataset()
+
+        evaluations = {}
+        for test_case in golden_dataset:
+            results = self.rrf_search(test_case["question"])
+            result_ids = [result["id"] for result in results]
+            result_rrfs = [f"{result["rrf_score"]:.4f}" for result in results]
+            relevant_results = [id for id in result_ids if id in test_case["relevant_sections"]]
+            precision = len(relevant_results) / RESULT_LIMIT
+            recall = len(relevant_results) / len(test_case["relevant_sections"])
+            evaluations[test_case["question"]] = {
+                "precision": precision,
+                "recall": recall,
+                "f1_score": (2 * (precision * recall) / (precision + recall)),
+                "retrieved_ids": result_ids,
+                "retrieved_rrfs": result_rrfs,
+                "relevant": relevant_results
+            }
+        return evaluations
 
     def save(self) -> None:
         os.makedirs(CACHE, exist_ok=True)

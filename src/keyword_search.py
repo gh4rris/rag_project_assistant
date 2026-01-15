@@ -83,7 +83,8 @@ class KeywordSearch:
                 if section.type == "code":
                     continue
                 content = format_section_content(section)
-                self._add_section(section.id, content)
+                data = f"{project.name} {section.label} {content}"
+                self._add_section(section.id, data)
 
     def save(self) -> None:
         os.makedirs(CACHE, exist_ok=True)

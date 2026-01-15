@@ -1,5 +1,5 @@
 from src.hybrid_search import HybridSearch
-from src.augmented_generation import generate_answer
+# from src.augmented_generation import generate_answer
 
 
 def main():
@@ -10,11 +10,16 @@ def main():
         hybrid_search.build()
         hybrid_search.save()
 
-    # question1 = "What's the maximum size profile image that can be uploaded?"
-    question2 = "What's the API instruction to create a post on a users profile?"
-    results = hybrid_search.rrf_search(question2)
-    answer = generate_answer(question2, results)
-    print(answer)
+    evaluations = hybrid_search.evaluate()
+
+    for question, result in evaluations.items():
+        print(f"Question: {question}")
+        print(f"Precision: {result["precision"]:.2f}")
+        print(f"Recall: {result["recall"]:.2f}")
+        print(f"F1 Score: {result["f1_score"]:.2f}")
+        print(f"Retrieved: {result["retrieved_ids"]}")
+        print(f"RRF Scores: {result["retrieved_rrfs"]}")
+        print(f"Relevant: {result["relevant"]}\n")
     
     # for result in results:
     #     print(f"Project: {result["project"]}")

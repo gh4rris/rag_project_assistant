@@ -13,7 +13,7 @@ client = OpenAI(
 )
 
 def generate_answer(question: str, documents: list[dict]) -> str:
-    doc_list = [f"{i}. Name: {doc["project"]}\n{doc["content"]}" for i, doc in enumerate(documents, 1)]
+    doc_list = [f"{i}. Name: {doc["project"]}\nLabel: {doc["label"]}\n{doc["content"]}\nScore:{doc["rrf_score"]}" for i, doc in enumerate(documents, 1)]
     doc_list_str = "\n\n".join(doc_list)
     prompt = f"""You will be provided with a question about a programming project from a dataset of multiple projects, along with some documents to provide additional context. Each document will include a project name and some content. Use any content that you deem relevant to answer the question, and always include any project names that you are refering to.
 
