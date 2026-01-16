@@ -7,6 +7,7 @@ PROJECTS = os.path.join(DATA, "projects.json")
 STOP_WORDS = os.path.join(DATA, "stopwords.txt")
 GOLDEN_DATASET = os.path.join(DATA, "golden_dataset.json")
 CACHE = os.path.join(ROOT_PATH, "cache")
+TEST_CACHE = os.path.join(CACHE, "tests")
 
 # KeywordSearch parameters
 BM25_K1 = 1.5
@@ -19,10 +20,11 @@ OVERLAP = 1
 
 # HybridSearch parameters
 RRF_K = 60
-LIMIT_MULTIPLYER = 2
+LIMIT_MULTIPLYER = 5
+RRF_THRESHOLD = 0
 
 # General
-RESULT_LIMIT = 5
+RESULT_LIMIT = 3
 
 # LLM
 MODEL = "mistralai/mistral-7b-instruct:free"

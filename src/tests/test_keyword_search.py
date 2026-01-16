@@ -1,29 +1,27 @@
+from config import TEST_CACHE
 from keyword_search import KeywordSearch
-from test_hybrid_search import test_projects
-
-import pytest
+from mock_projects import mock_projects
 
 
-@pytest.fixture
-def keyword_search() -> KeywordSearch:
-    ks = KeywordSearch()
-    ks.build(test_projects)
-    return ks
+keyword_search = KeywordSearch(TEST_CACHE)
+try:
+    keyword_search.load()
+except FileNotFoundError:
+    keyword_search.build(mock_projects)
+    keyword_search.save()
+project_map = {}
+section_map = {}
+for project in mock_projects:
+        for section in project.sections:
+            project_map[section.id] = project
+            section_map[section.id] = section
 
-
-def test_build(keyword_search: KeywordSearch):
+def test_build():
     assert keyword_search.index["mock"] == {1}, "Mock keyword in section 1 only"
     assert len(keyword_search.token_frequencies) == 3, "Token frequencies for 3 sections"
     assert len(keyword_search.section_lengths) == 3, "Token lengths for 3 sections"
 
-def test_bm25_search(keyword_search: KeywordSearch):
-    project_map = {}
-    section_map = {}
-    for project in test_projects:
-            for section in project.sections:
-                project_map[section.id] = project
-                section_map[section.id] = section
-
+def test_bm25_search():
     results = keyword_search.bm25_search("mock", project_map, section_map, 2)
     
     assert len(results) == 2, "Length of results set by limit"

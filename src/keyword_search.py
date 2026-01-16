@@ -12,14 +12,15 @@ class KeywordSearch:
     token_frequencies: defaultdict[int, Counter]
     section_lengths: dict[int, int]
 
-    def __init__(self) -> None:
+    def __init__(self, cache=CACHE) -> None:
         self.index = defaultdict(set) # mapping tokens to sets of Section IDs
         self.token_frequencies = defaultdict(Counter) # mapping Section IDs to token Counter
         self.section_lengths = {} # mapping Section IDs to their token length
 
-        self.__index_path = os.path.join(CACHE, "index.pkl")
-        self.__token_frequencies = os.path.join(CACHE, "token_frequencies.pkl")
-        self.__section_lengths = os.path.join(CACHE, "section_lengths.pkl")
+        self._cache = cache
+        self._index_path = os.path.join(cache, "index.pkl")
+        self._token_frequencies = os.path.join(cache, "token_frequencies.pkl")
+        self._section_lengths = os.path.join(cache, "section_lengths.pkl")
 
     def _add_section(self, id: int, text: str) -> None:
         tokenized_text = tokenize_text(text)
@@ -87,18 +88,18 @@ class KeywordSearch:
                 self._add_section(section.id, data)
 
     def save(self) -> None:
-        os.makedirs(CACHE, exist_ok=True)
-        with open(self.__index_path, "wb") as f:
+        os.makedirs(self._cache, exist_ok=True)
+        with open(self._index_path, "wb") as f:
             pickle.dump(self.index, f)
-        with open(self.__token_frequencies, "wb") as f:
+        with open(self._token_frequencies, "wb") as f:
             pickle.dump(self.token_frequencies, f)
-        with open(self.__section_lengths, "wb") as f:
+        with open(self._section_lengths, "wb") as f:
             pickle.dump(self.section_lengths, f)
 
     def load(self) -> None:
-        with open(self.__index_path, "rb") as f:
+        with open(self._index_path, "rb") as f:
             self.index = pickle.load(f)
-        with open(self.__token_frequencies, "rb") as f:
+        with open(self._token_frequencies, "rb") as f:
             self.token_frequencies = pickle.load(f)
-        with open(self.__section_lengths, "rb") as f:
+        with open(self._section_lengths, "rb") as f:
             self.section_lengths = pickle.load(f)

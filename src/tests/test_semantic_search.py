@@ -1,6 +1,7 @@
+from config import TEST_CACHE
 from utils import Section
 from semantic_search import SemanticSearch
-from test_hybrid_search import test_projects
+from mock_projects import mock_projects
 
 import pytest
 import numpy as np
@@ -8,11 +9,15 @@ from numpy import float32
 
 
 
-semantic_search = SemanticSearch()
-semantic_search.build(test_projects)
+semantic_search = SemanticSearch(TEST_CACHE)
+try:
+    semantic_search.load()
+except FileNotFoundError:
+    semantic_search.build(mock_projects)
+    semantic_search.save()
 project_map = {}
 section_map = {}
-for project in test_projects:
+for project in mock_projects:
         for section in project.sections:
             project_map[section.id] = project
             section_map[section.id] = section

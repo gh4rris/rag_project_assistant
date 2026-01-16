@@ -1,56 +1,21 @@
-from utils import Project, Section
+from config import TEST_CACHE
 from hybrid_search import HybridSearch
+from mock_projects import mock_projects
 
 import pytest
 from pytest_mock import MockerFixture
 
-test_projects = [
-        Project(
-            name="First project",
-            repo_url="http://repo1.com",
-            sections=[
-                Section(
-                    id=1,
-                    label="First section",
-                    content="Mock content 1",
-                    type="text"
-                ),
-                Section(
-                    id=2,
-                    label="Second section",
-                    content=["text 1", "text 2"],
-                    type="list"
-                )
-            ]
-        ),
-        Project(
-            name="Second project",
-            repo_url="http://repo2.com",
-            sections=[
-                Section(
-                    id=3,
-                    label="First section",
-                    content={
-                        "my_code": ["git clone repo", "cd project"]
-                    },
-                    type="code"
-                ),
-                Section(
-                    id=4,
-                    label="Second section",
-                    content=[["one", "two"], ["three", "four"]],
-                    type="instructions"
-                )
-            ]
-        )
-    ]
 
 @pytest.fixture
 def hybrid_search(mocker: MockerFixture):
-    hs = HybridSearch()
-    mock_load_projects = mocker.patch("hybrid_search.load_projects")
-    mock_load_projects.return_value = test_projects
-    hs.build()
+    hs = HybridSearch(TEST_CACHE)
+    try:
+        hs.load()
+    except FileNotFoundError:
+        mock_load_projects = mocker.patch("hybrid_search.load_projects")
+        mock_load_projects.return_value = mock_projects
+        hs.build()
+        hs.save()
     return hs
 
 def test_build(hybrid_search: HybridSearch):

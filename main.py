@@ -12,6 +12,7 @@ def main():
 
     evaluations = hybrid_search.evaluate()
 
+    total_f1 = 0
     for question, result in evaluations.items():
         print(f"Question: {question}")
         print(f"Precision: {result["precision"]:.2f}")
@@ -20,6 +21,8 @@ def main():
         print(f"Retrieved: {result["retrieved_ids"]}")
         print(f"RRF Scores: {result["retrieved_rrfs"]}")
         print(f"Relevant: {result["relevant"]}\n")
+        total_f1 += result["f1_score"]
+    print(f"Mean F1: {(total_f1 / len(evaluations.items())):.2f}")
     
     # for result in results:
     #     print(f"Project: {result["project"]}")

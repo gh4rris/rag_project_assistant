@@ -24,7 +24,11 @@
         "relevant_sections": [1, 2, 16, 17, 23]
     },
     {
-        "question": "Not relevant to anything",
-        "relevant_sections": []
+        "question": "Tell me something about loan_approval_ml",
+        "relevant_sections": [1, 2, 3, 4]
+    },
+    {
+        "question": "Tell me something about the loan approval project",
+        "relevant_sections": [1, 2, 3, 4]
     }
 ]

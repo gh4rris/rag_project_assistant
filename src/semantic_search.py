@@ -13,13 +13,14 @@ class SemanticSearch:
     chunk_embeddings: NDArray[float32] | None # array of embedded Section chunks
     chunk_metadata: list[dict] | None # metadata corresponding to chunk embeddings
 
-    def __init__(self):
+    def __init__(self, cache=CACHE):
         self.model = SentenceTransformer(SEMANTIC_MODEL)
         self.chunk_embeddings = None
         self.chunk_metadata = None
 
-        self.__chunk_embeddings_path = os.path.join(CACHE, "chunk_embeddings.npy")
-        self.__chunk_metadata_path = os.path.join(CACHE, "metadata.json")
+        self._cache = cache
+        self._chunk_embeddings_path = os.path.join(cache, "chunk_embeddings.npy")
+        self._chunk_metadata_path = os.path.join(cache, "metadata.json")
 
     def _generate_embedding(self, text: str) -> NDArray[float32]:
         if not text.strip():
@@ -118,16 +119,16 @@ class SemanticSearch:
         self.chunk_metadata = metadata
 
     def save(self) -> None:
-        os.makedirs(CACHE, exist_ok=True)
-        with open(self.__chunk_embeddings_path, "wb") as f:
+        os.makedirs(self._cache, exist_ok=True)
+        with open(self._chunk_embeddings_path, "wb") as f:
             pickle.dump(self.chunk_embeddings, f)
-        with open(self.__chunk_metadata_path, "wb") as f:
+        with open(self._chunk_metadata_path, "wb") as f:
             pickle.dump(self.chunk_metadata, f)
 
     def load(self) -> None:
-        with open(self.__chunk_embeddings_path, "rb") as f:
+        with open(self._chunk_embeddings_path, "rb") as f:
             self.chunk_embeddings = pickle.load(f)
-        with open(self.__chunk_metadata_path, "rb") as f:
+        with open(self._chunk_metadata_path, "rb") as f:
             self.chunk_metadata = pickle.load(f)    
 
 
