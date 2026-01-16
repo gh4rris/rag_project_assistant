@@ -30,17 +30,6 @@ def test_tokenize_text():
         Section(
         id=3,
         label="Test section",
-        content={
-            "my_code": ["git clone repo", "cd project"]
-        },
-        type="code"
-        ),
-        ""
-    ),
-    (
-        Section(
-        id=4,
-        label="Test section",
         content=[["one", "two"], ["three", "four"]],
         type="instructions"
         ),

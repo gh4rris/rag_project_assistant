@@ -1,3 +1,4 @@
+from utils import Section
 from semantic_search import SemanticSearch
 from test_hybrid_search import test_projects
 
@@ -6,29 +7,28 @@ import numpy as np
 from numpy import float32
 
 
-@pytest.fixture
-def semantic_search():
-    ss = SemanticSearch()
-    ss.build(test_projects)
-    return ss
 
-def test_build(semantic_search: SemanticSearch):
+semantic_search = SemanticSearch()
+semantic_search.build(test_projects)
+project_map = {}
+section_map = {}
+for project in test_projects:
+        for section in project.sections:
+            project_map[section.id] = project
+            section_map[section.id] = section
+
+
+def test_build():
     assert isinstance(semantic_search.chunk_embeddings[0][0], float32), "Embeddings are 32 bit"
     assert semantic_search.chunk_metadata[0]["total_chunks"] == 1, "Chunk metadata"
 
-def test_search_chunks(semantic_search: SemanticSearch):
-    project_map = {}
-    section_map = {}
-    for project in test_projects:
-            for section in project.sections:
-                project_map[section.id] = project
-                section_map[section.id] = section
-
+def test_search_chunks():
     results = semantic_search.search_chunks("fake", project_map, section_map, 2)
 
     assert len(results) == 2, "Length of results set by limit"
     assert results[0]["project"] == "First project", "Semantic match between fake and mock"
     assert results[0]["score"] > 0, "Match returns positive score"
+
 
 @pytest.mark.parametrize("text, expected", [
     ("First sentence. Second sentence! Third?", ["First sentence.", "Second sentence!", "Third?"]),
@@ -37,18 +37,42 @@ def test_search_chunks(semantic_search: SemanticSearch):
     ("  ! ... ? ..", ["!", "...", "?", ".."]),
     ("", [])
 ])
-def test_split_sentences(text, expected, semantic_search: SemanticSearch):
+def test_split_sentences(text, expected):
     assert semantic_search._split_sentences(text) == expected
 
-def test_semantic_chunk(semantic_search: SemanticSearch):
-    sentences = "First. Second. Third! Fourth? Fith! Sixth! Seventh?"
-    word = "word"
-    assert semantic_search._semantic_chunk(sentences, 3, 1) == ["First. Second. Third!", "Third! Fourth? Fith!", "Fith! Sixth! Seventh?"]
-    assert semantic_search._semantic_chunk(sentences, 4, 1) == ["First. Second. Third! Fourth?", "Fourth? Fith! Sixth! Seventh?"]
-    assert semantic_search._semantic_chunk(sentences, 4, 2) == ["First. Second. Third! Fourth?", "Third! Fourth? Fith! Sixth!", "Fith! Sixth! Seventh?"]
-    assert semantic_search._semantic_chunk(word, 4, 1) == ["word"]
+
+@pytest.mark.parametrize("content, type, chunk_size, overlap, expected", [
+    (
+        "First. Second. Third! Fourth? Fith! Sixth! Seventh?", "text",
+        3, 1,
+        ["First. Second. Third!", "Third! Fourth? Fith!", "Fith! Sixth! Seventh?"]
+    ),
+    (
+       "First. Second. Third! Fourth? Fith! Sixth! Seventh?", "text",
+       4, 1,
+       ["First. Second. Third! Fourth?", "Fourth? Fith! Sixth! Seventh?"]
+    ),
+    (
+        "First. Second. Third! Fourth? Fith! Sixth! Seventh?", "text",
+        4, 2,
+        ["First. Second. Third! Fourth?", "Third! Fourth? Fith! Sixth!", "Fith! Sixth! Seventh?"]
+    ),
+    (
+        ["text 1", "text 2", "text 3", "text 4"], "list",
+        4, 1,
+        ["text 1", "text 2", "text 3", "text 4"]
+    ),
+    (
+         [["text 1", "text 1"], ["text 2", "text 2", "text 2"], ["text 3", "text 3"]], "instructions",
+         4, 1,
+         ["text 1\ntext 1", "text 2\ntext 2\ntext 2", "text 3\ntext 3"]
+    )
+])
+def test_semantic_chunk(content, type, chunk_size, overlap, expected):
+    section = Section(id=1, label="Test section", content=content, type=type)
+    assert semantic_search._semantic_chunk(section, chunk_size, overlap) == expected
     
-def test_cosine_similarity(semantic_search: SemanticSearch):
+def test_cosine_similarity():
     vec1 = np.array([1, 2, 3], dtype=float32)
     vec2 = np.array([4, 5, 6], dtype=float32)
     assert semantic_search._cosine_similarity(vec1, vec2) == 0.9746318

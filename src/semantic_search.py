@@ -33,16 +33,23 @@ class SemanticSearch:
         sentences = re.split(r"(?<=[.!?]\s)", stripped_text)
         return [sentence.strip() for sentence in sentences if sentence.strip()]
     
-    def _semantic_chunk(self, text: str, chunk_size: int=CHUNK_SIZE, overlap: int=OVERLAP) -> list[str]:
-        sentences = self._split_sentences(text)
-        chunks = []
-        i = 0
-        while i < len(sentences):
-            chunk = sentences[i:i + chunk_size]
-            if chunks and len(chunk) <= overlap:
-                break
-            chunks.append(" ".join(chunk))
-            i += chunk_size - overlap
+    def _semantic_chunk(self, section: Section, chunk_size: int=CHUNK_SIZE, overlap: int=OVERLAP) -> list[str]:
+        match section.type:
+            case "text":
+                sentences = self._split_sentences(section.content)
+                chunks = []
+                i = 0
+                while i < len(sentences):
+                    chunk = sentences[i:i + chunk_size]
+                    if chunks and len(chunk) <= overlap:
+                        break
+                    chunks.append(" ".join(chunk))
+                    i += chunk_size - overlap
+                return chunks
+            case "list":
+                chunks = section.content
+            case "instructions":
+                chunks = ["\n".join(item) for item in section.content]
         return chunks
     
     def _cosine_similarity(self, vec1: NDArray[float32], vec2: NDArray[float32]) -> float32:
@@ -97,8 +104,7 @@ class SemanticSearch:
             for section in project.sections:
                 if section.type == "code":
                     continue
-                content = format_section_content(section)
-                content_chunks = self._semantic_chunk(content)
+                content_chunks = self._semantic_chunk(section)
                 for i, chunk in enumerate(content_chunks):
                     all_chunks.append(chunk)
                     metadata.append(

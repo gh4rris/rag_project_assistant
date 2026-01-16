@@ -8,7 +8,23 @@
         "relevant_sections": [11]
     },
     {
-        "question": "Give me a summary of the available projects",
-        "relevant_sections": [1, 6, 13]
+        "question": "How do I run the loan approval app locally?",
+        "relevant_sections": [4]
+    }, 
+    {
+        "question": "How do I install the animal rights networking app?",
+        "relevant_sections": [9]
+    },
+    {
+        "question": "What is the tech stack?",
+        "relevant_sections": [3, 6, 8, 15]
+    },
+    {
+        "question": "What machine learning model was used?",
+        "relevant_sections": [1, 2, 16, 17, 23]
+    },
+    {
+        "question": "Not relevant to anything",
+        "relevant_sections": []
     }
 ]

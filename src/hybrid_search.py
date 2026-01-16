@@ -73,12 +73,12 @@ class HybridSearch:
             result_ids = [result["id"] for result in results]
             result_rrfs = [f"{result["rrf_score"]:.4f}" for result in results]
             relevant_results = [id for id in result_ids if id in test_case["relevant_sections"]]
-            precision = len(relevant_results) / RESULT_LIMIT
-            recall = len(relevant_results) / len(test_case["relevant_sections"])
+            precision = len(relevant_results) / len(result_ids)
+            recall = len(relevant_results) / len(test_case["relevant_sections"]) if len(test_case["relevant_sections"]) > 0 else 0
             evaluations[test_case["question"]] = {
                 "precision": precision,
                 "recall": recall,
-                "f1_score": (2 * (precision * recall) / (precision + recall)),
+                "f1_score": (2 * (precision * recall) / (precision + recall)) if precision + recall > 0 else 0,
                 "retrieved_ids": result_ids,
                 "retrieved_rrfs": result_rrfs,
                 "relevant": relevant_results

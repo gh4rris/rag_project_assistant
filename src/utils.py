@@ -40,11 +40,11 @@ def tokenize_text(text: str) -> list[str]:
     return [stemmer.stem(word) for word in filtered_words]
 
 def format_section_content(section: Section) -> str:
-    if section.type == "text":
-        return section.content
-    if section.type == "list":
-        return "- " + "\n- ".join(section.content)
-    if section.type == "instructions":
-        groups = ["\n".join(group) for group in section.content]
-        return "\n\n".join(groups)
-    return ""
+    match section.type:
+        case "text":
+            return section.content
+        case "list":
+            return "- " + "\n- ".join(section.content)
+        case "instructions":
+            groups = ["\n".join(group) for group in section.content]
+            return "\n\n".join(groups)
