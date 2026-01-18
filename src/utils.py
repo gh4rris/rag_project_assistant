@@ -31,6 +31,10 @@ def load_stop_words() -> list[str]:
 def load_golden_dataset() -> list[dict]:
     with open(GOLDEN_DATASET, "r") as f:
         return json.load(f)
+    
+def load_prompt(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
 
 def tokenize_text(text: str) -> list[str]:
     text = text.lower()

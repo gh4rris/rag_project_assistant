@@ -5,6 +5,7 @@ mock_projects = [
         Project(
             name="First project",
             repo_url="http://repo1.com",
+            summary="First summary",
             sections=[
                 Section(
                     id=1,
@@ -23,6 +24,7 @@ mock_projects = [
         Project(
             name="Second project",
             repo_url="http://repo2.com",
+            summary="Second summary",
             sections=[
                 Section(
                     id=3,

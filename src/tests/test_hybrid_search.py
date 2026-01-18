@@ -21,5 +21,5 @@ def hybrid_search(mocker: MockerFixture):
 def test_build(hybrid_search: HybridSearch):
     assert len(hybrid_search.project_map) == len(hybrid_search.section_map), "Project map and Section map same length"
     assert hybrid_search.project_map[1].name == "First project", "Section ID maps to project name"
-    assert hybrid_search.project_map[3].repo_url == "http://repo2.com", "Section ID maps to project url"
-    assert hybrid_search.section_map[4].type == "instructions", "Section ID maps to Section object"
+    assert hybrid_search.project_map[4].repo_url == "http://repo2.com", "Section ID maps to project url"
+    assert hybrid_search.section_map[2].type == "list", "Section ID maps to Section object"

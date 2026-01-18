@@ -8,6 +8,13 @@ STOP_WORDS = os.path.join(DATA, "stopwords.txt")
 GOLDEN_DATASET = os.path.join(DATA, "golden_dataset.json")
 CACHE = os.path.join(ROOT_PATH, "cache")
 TEST_CACHE = os.path.join(CACHE, "tests")
+PROMPTS = os.path.join(ROOT_PATH, "prompts")
+
+# Prompts
+SYSTEM_PROMPT = os.path.join(PROMPTS, "system_prompt.txt")
+
+# LLM
+LLM_MODEL = "xiaomi/mimo-v2-flash:free"
 
 # KeywordSearch parameters
 BM25_K1 = 1.5
@@ -23,11 +30,9 @@ RRF_K = 60
 LIMIT_MULTIPLYER = 4
 THRESHOLD_RANGE = 4
 
-# General
-RESULT_LIMIT = 4
-
 # CrossEncoder
 CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-TinyBERT-L2-v2"
 
-# LLM
-MODEL = "mistralai/mistral-7b-instruct:free"
+# General
+RESULT_LIMIT = 4
+

@@ -1,4 +1,5 @@
-from config import MODEL
+from config import LLM_MODEL, SYSTEM_PROMPT
+from src.utils import load_prompt
 
 import os
 from dotenv import load_dotenv
@@ -12,11 +13,13 @@ client = OpenAI(
     api_key=api_key
 )
 
-def generate_answer(question: str, documents: list[dict]) -> str:
-    doc_list = [f"{i}. Name: {doc["project"]}\nLabel: {doc["label"]}\n{doc["content"]}\nScore:{doc["rrf_score"]}" for i, doc in enumerate(documents, 1)]
-    doc_list_str = "\n\n".join(doc_list)
-    prompt = f"""You will be provided with a question about a programming project from a dataset of multiple projects, along with some documents to provide additional context. Each document will include a project name and some content. Use any content that you deem relevant to answer the question, and always include any project names that you are refering to.
 
+
+def generate_answer(question: str, documents: list[dict]) -> str:
+    doc_list = [f"{i}. Name: {doc["project"]}\nLabel: {doc["label"]}\n{doc["content"]}" for i, doc in enumerate(documents, 1)]
+    doc_list_str = "\n\n".join(doc_list)
+    system_prompt = load_prompt(SYSTEM_PROMPT)
+    user_prompt = f"""
 Question: {question}
 
 Documents:
@@ -25,9 +28,10 @@ Documents:
 Answer:"""
     
     response = client.chat.completions.create(
-        model=MODEL,
+        model=LLM_MODEL,
         messages=[
-            {"role": "user", "content": prompt}
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
         ]
     )
 

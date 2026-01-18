@@ -1,5 +1,5 @@
 from src.hybrid_search import HybridSearch
-# from src.augmented_generation import generate_answer
+from src.augmented_generation import generate_answer
 
 import argparse
 
@@ -25,14 +25,8 @@ def main():
     match args.command:
         case "ask":
             results = hybrid_search.rrf_search(args.question)
-            for result in results:
-                print(f"Project: {result["project"]}")
-                print(f"Repo URL: {result["url"]}")
-                print(f"Section ID: {result["id"]}")
-                print(f"Label: {result["label"]}")
-                print(f"Content: {result["content"][:120]}...")
-                print(f"Type: {result["type"]}")
-                print(f"Cross Encoder Score: {result["cross_encoder_score"]:.2f}\n")
+            answer = generate_answer(args.question, results)
+            print(answer)
         case "evaluate":
             evaluations = hybrid_search.evaluate()
 
