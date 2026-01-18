@@ -5,6 +5,7 @@ build/
 dist/
 wheels/
 *.egg-info
+.vscode
 .pytest_cache
 cache/
 .ruff_cache/

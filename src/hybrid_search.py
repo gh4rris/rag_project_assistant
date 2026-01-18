@@ -1,10 +1,11 @@
-from config import RRF_K, RESULT_LIMIT, CACHE, LIMIT_MULTIPLYER, RRF_THRESHOLD
+from config import RRF_K, RESULT_LIMIT, CACHE, LIMIT_MULTIPLYER, THRESHOLD_RANGE, CROSS_ENCODER_MODEL
 from src.utils import load_projects, load_golden_dataset, Project, Section
 from src.keyword_search import KeywordSearch
 from src.semantic_search import SemanticSearch
 
 import os
 import pickle
+from sentence_transformers import CrossEncoder
 
 
 class HybridSearch:
@@ -48,19 +49,35 @@ class HybridSearch:
                 rrf_scores[id]["rrf_score"] += self._rrf_score(rank)
 
         return rrf_scores
+    
+    def _rerank_results(self, query: str, results: list[dict], limit: int) -> list[dict]:
+        pairs = [[query, f"{result["project"]} - {result["summary"]}\n{result["label"]}:\n{result["content"]}"] for result in results]
+        cross_encoder = CrossEncoder(CROSS_ENCODER_MODEL)
+        scores = cross_encoder.predict(pairs)
+        scored_results = []
+        for result, score in zip(results, scores):
+            scored_results.append({**result, "cross_encoder_score": score})
+        scored_results.sort(key=lambda x: x["cross_encoder_score"], reverse=True)
+        min_threshold = scored_results[0]["cross_encoder_score"] - THRESHOLD_RANGE
+        filtered_results = [result for result in scored_results if result["cross_encoder_score"] > min_threshold]
+        return filtered_results[:limit]
 
-    def rrf_search(self, query: str, limit: int=RESULT_LIMIT) -> list[dict]:
-        bm25_results = self.keyword_search.bm25_search(query, self.project_map, self.section_map, limit * LIMIT_MULTIPLYER)
-        semantic_results = self.semantic_search.search_chunks(query, self.project_map, self.section_map, limit * LIMIT_MULTIPLYER)
+    def rrf_search(self, query: str, rerank: bool=True, limit: int=RESULT_LIMIT) -> list[dict]:
+        search_limit = limit * LIMIT_MULTIPLYER if rerank else limit
+        bm25_results = self.keyword_search.bm25_search(query, self.project_map, self.section_map, search_limit)
+        semantic_results = self.semantic_search.search_chunks(query, self.project_map, self.section_map, search_limit)
         rrf_results = self._combine_rrf(bm25_results, semantic_results)
         sorted_rrf = sorted(rrf_results.values(), key=lambda x: x["rrf_score"], reverse=True)
-        filtered_rrf = [result for result in sorted_rrf if result["rrf_score"] > RRF_THRESHOLD]
-        return filtered_rrf[:limit]
+        if rerank:
+            return self._rerank_results(query, sorted_rrf, limit)
+        return sorted_rrf[:limit]
     
     def build(self) -> None:
         projects = load_projects()
         for project in projects:
             for section in project.sections:
+                if section.type == "code":
+                    continue
                 self.project_map[section.id] = project
                 self.section_map[section.id] = section
         self.keyword_search.build(projects)
@@ -73,7 +90,7 @@ class HybridSearch:
         for test_case in golden_dataset:
             results = self.rrf_search(test_case["question"])
             result_ids = [result["id"] for result in results]
-            result_rrfs = [f"{result["rrf_score"]:.4f}" for result in results]
+            result_scores = [f"{result["cross_encoder_score"]:.4f}" for result in results]
             relevant_results = [id for id in result_ids if id in test_case["relevant_sections"]]
             precision = len(relevant_results) / len(result_ids) if len(result_ids) > 0 else 0
             recall = len(relevant_results) / len(test_case["relevant_sections"]) if len(test_case["relevant_sections"]) > 0 else 0
@@ -82,7 +99,7 @@ class HybridSearch:
                 "recall": recall,
                 "f1_score": (2 * (precision * recall) / (precision + recall)) if precision + recall > 0 else 0,
                 "retrieved_ids": result_ids,
-                "retrieved_rrfs": result_rrfs,
+                "retrieved_rrfs": result_scores,
                 "relevant": relevant_results
             }
         return evaluations
@@ -99,6 +116,8 @@ class HybridSearch:
             self.project_map = pickle.load(f)
         for project in self.project_map.values():
             for section in project.sections:
+                if section.type == "code":
+                    continue
                 self.section_map[section.id] = section
         self.keyword_search.load()
         self.semantic_search.load()

@@ -89,6 +89,7 @@ class SemanticSearch:
                 {
                     "project": project.name,
                     "url": project.repo_url,
+                    "summary": project.summary,
                     "id": section.id,
                     "label": section.label,
                     "content": content,

@@ -20,11 +20,14 @@ OVERLAP = 1
 
 # HybridSearch parameters
 RRF_K = 60
-LIMIT_MULTIPLYER = 5
-RRF_THRESHOLD = 0
+LIMIT_MULTIPLYER = 4
+THRESHOLD_RANGE = 4
 
 # General
-RESULT_LIMIT = 3
+RESULT_LIMIT = 4
+
+# CrossEncoder
+CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-TinyBERT-L2-v2"
 
 # LLM
 MODEL = "mistralai/mistral-7b-instruct:free"

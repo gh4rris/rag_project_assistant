@@ -16,6 +16,7 @@ class Section(BaseModel):
 class Project(BaseModel):
     name: str
     repo_url: str
+    summary: str
     sections: list[Section]
 
 def load_projects() -> list[Project]:

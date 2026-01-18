@@ -53,7 +53,7 @@ class KeywordSearch:
     def bm25_search(self, query: str, project_map: dict[int, Project], section_map: dict[int, Section], limit: int) -> list[dict]:
         tokenized_query = tokenize_text(query)
         bm25_scores = {}
-        for id in section_map:
+        for id in section_map.keys():
             score = 0
             for token in tokenized_query:
                 score += self._bm25(id, token, section_map)
@@ -69,6 +69,7 @@ class KeywordSearch:
                 {
                     "project": project.name,
                     "url": project.repo_url,
+                    "summary": project.summary,
                     "id": section.id,
                     "label": section.label,
                     "content": content,

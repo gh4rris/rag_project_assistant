@@ -2,6 +2,7 @@
     {
         "name": "loan_approval_ml",
         "repo_url": "https://github.com/gh4rris/loan_approval_ml",
+        "summary": "A supervised machine learning application that predicts loan approval likelihood",
         "sections": [
             {
                 "id": 1,
@@ -43,6 +44,7 @@
     },
     {
         "name": "ar-united",
+        "summary": "A full-stack web application hub for animal rights groups and activists to network",
         "repo_url": "https://github.com/gh4rris/ar-united",
         "sections": [
             {
@@ -162,6 +164,7 @@
     {
         "name": "vegan_youtube",
         "repo_url": "https://github.com/gh4rris/vegan_youtube",
+        "summary": "Video data scraping & engagement analysis supervised learning project",
         "sections": [
             {
                 "id": 13,
