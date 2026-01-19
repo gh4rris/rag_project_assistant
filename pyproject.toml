@@ -18,6 +18,7 @@ dev = [
     "pytest>=9.0.2",
     "pytest-mock>=3.15.1",
     "ruff>=0.14.11",
+    "ty>=0.0.12",
 ]
 [tool.pytest.ini_options]
 pythonpath = [".", "src"]

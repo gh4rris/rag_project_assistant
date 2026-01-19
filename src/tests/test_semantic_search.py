@@ -5,7 +5,9 @@ from mock_projects import mock_projects
 
 import pytest
 import numpy as np
+from typing import cast
 from numpy import float32
+from numpy.typing import NDArray
 
 
 
@@ -24,8 +26,8 @@ for project in mock_projects:
 
 
 def test_build():
-    assert isinstance(semantic_search.chunk_embeddings[0][0], float32), "Embeddings are 32 bit"
-    assert semantic_search.chunk_metadata[0]["total_chunks"] == 1, "Chunk metadata"
+    assert isinstance(cast(NDArray[float32], semantic_search.chunk_embeddings)[0][0], float32), "Embeddings are 32 bit"
+    assert cast(list[dict], semantic_search.chunk_metadata)[0]["total_chunks"] == 1, "Chunk metadata"
 
 def test_search_chunks():
     results = semantic_search.search_chunks("fake", project_map, section_map, 2)

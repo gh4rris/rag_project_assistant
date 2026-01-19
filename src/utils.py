@@ -3,7 +3,7 @@ from config import PROJECTS, STOP_WORDS, GOLDEN_DATASET
 import json
 import string
 from pydantic import BaseModel
-from typing import Any
+from typing import Any, cast
 from nltk.stem import PorterStemmer
 
 
@@ -47,9 +47,11 @@ def tokenize_text(text: str) -> list[str]:
 def format_section_content(section: Section) -> str:
     match section.type:
         case "text":
-            return section.content
+            return cast(str, section.content)
         case "list":
-            return "- " + "\n- ".join(section.content)
+            return "- " + "\n- ".join(cast(list[str], section.content))
         case "instructions":
-            groups = ["\n".join(group) for group in section.content]
+            groups = ["\n".join(group) for group in cast(list[list[str]], section.content)]
             return "\n\n".join(groups)
+        case _:
+            raise ValueError("Invalid section type.")

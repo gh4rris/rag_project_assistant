@@ -5,6 +5,7 @@ import re
 import os
 import pickle
 import numpy as np
+from typing import cast
 from numpy import float32
 from numpy.typing import NDArray
 from sentence_transformers import SentenceTransformer
@@ -37,8 +38,8 @@ class SemanticSearch:
     def _semantic_chunk(self, section: Section, chunk_size: int=CHUNK_SIZE, overlap: int=OVERLAP) -> list[str]:
         match section.type:
             case "text":
-                sentences = self._split_sentences(section.content)
-                chunks = []
+                sentences = self._split_sentences(cast(str, section.content))
+                chunks: list[str] = []
                 i = 0
                 while i < len(sentences):
                     chunk = sentences[i:i + chunk_size]
@@ -48,17 +49,18 @@ class SemanticSearch:
                     i += chunk_size - overlap
                 return chunks
             case "list":
-                chunks = section.content
+                return cast(list[str], section.content)
             case "instructions":
-                chunks = ["\n".join(item) for item in section.content]
-        return chunks
+                return ["\n".join(item) for item in cast(list[list[str]], section.content)]
+            case _:
+                raise ValueError("Invalid section type.")
     
     def _cosine_similarity(self, vec1: NDArray[float32], vec2: NDArray[float32]) -> float32:
         dot_product = np.dot(vec1, vec2)
         norm1 = np.linalg.norm(vec1)
         norm2 = np.linalg.norm(vec2)
         if norm1 == 0 or norm2 == 0:
-            return 0
+            return float32(0)
         return dot_product / (norm1 * norm2)
 
     def search_chunks(self, query: str, project_map: dict[int, Project], section_map: dict[int, Section], limit: int) -> list[dict]:
@@ -70,7 +72,7 @@ class SemanticSearch:
             score = self._cosine_similarity(query_embedding, chunk_embedding)
             chunk_scores.append(
                 {
-                    "section_id": self.chunk_metadata[i]["section_id"],
+                    "section_id": cast(list[dict], self.chunk_metadata)[i]["section_id"],
                     "score": score
                 }
             )
@@ -99,7 +101,7 @@ class SemanticSearch:
             )
         return results
     
-    def build(self, projects: list[Project]) -> NDArray[float32]:
+    def build(self, projects: list[Project]) -> None:
         all_chunks = []
         metadata = []
         for project in projects:
