@@ -25,8 +25,7 @@ def main():
     match args.command:
         case "ask":
             results = hybrid_search.rrf_search(args.question)
-            answer = generate_answer(args.question, results)
-            print(answer)
+            generate_answer(args.question, results)
         case "evaluate":
             evaluations = hybrid_search.evaluate()
 

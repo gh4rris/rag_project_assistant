@@ -14,8 +14,7 @@ client = OpenAI(
 )
 
 
-
-def generate_answer(question: str, documents: list[dict]) -> str:
+def generate_answer(question: str, documents: list[dict]) -> None:
     doc_list = [f"{i}. Name: {doc["project"]}\nLabel: {doc["label"]}\n{doc["content"]}" for i, doc in enumerate(documents, 1)]
     doc_list_str = "\n\n".join(doc_list)
     system_prompt = load_prompt(SYSTEM_PROMPT)
@@ -32,7 +31,16 @@ Answer:"""
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}
-        ]
+        ],
+        stream=True
     )
 
-    return (response.choices[0].message.content or "").strip()
+    complete_response = ""
+
+    for chunk in response:
+        if chunk.choices[0].delta.content is not None:
+            content = chunk.choices[0].delta.content
+            complete_response += content
+
+            print(content, end="", flush=True)
+    print()
