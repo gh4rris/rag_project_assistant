@@ -83,23 +83,23 @@ class HybridSearch:
         self.keyword_search.build(projects)
         self.semantic_search.build(projects)
 
-    def evaluate(self) -> dict[str, dict]:
+    def evaluate(self, k: int) -> dict[str, dict]:
         golden_dataset = load_golden_dataset()
 
         evaluations = {}
         for test_case in golden_dataset:
-            results = self.rrf_search(test_case["question"])
+            results = self.rrf_search(test_case["question"], limit=k)
             result_ids = [result["id"] for result in results]
             result_scores = [f"{result["cross_encoder_score"]:.4f}" for result in results]
             relevant_results = [id for id in result_ids if id in test_case["relevant_sections"]]
-            precision = len(relevant_results) / len(result_ids) if len(result_ids) > 0 else 0
-            recall = len(relevant_results) / len(test_case["relevant_sections"]) if len(test_case["relevant_sections"]) > 0 else 0
+            precision = len(relevant_results) / k
+            recall = len(relevant_results) / len(test_case["relevant_sections"])
             evaluations[test_case["question"]] = {
                 "precision": precision,
                 "recall": recall,
                 "f1_score": (2 * (precision * recall) / (precision + recall)) if precision + recall > 0 else 0,
                 "retrieved_ids": result_ids,
-                "retrieved_rrfs": result_scores,
+                "retrieved_scores": result_scores,
                 "relevant": relevant_results
             }
         return evaluations
