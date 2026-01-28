@@ -1,6 +1,8 @@
 # Rag Q&A Project Assistant
 
-A command-line Retrieval-Augmented Generation system that answers questions about my portfolio projects by retrieving data from the README files.
+A Retrieval-Augmented Generation system that answers questions about my portfolio projects by retrieving data from the README files.
+
+Live Assistant: [https://ragprojectassistant-jwgekvzyney6auurumdl37.streamlit.app/](https://ragprojectassistant-jwgekvzyney6auurumdl37.streamlit.app/)
 
 The retrieval system uses a hybrid of keyword search (BM25) and semantic search (chunk embeddings). The results are then reranked using a cross-encoder and passed to an LLM to generate a response.
 
@@ -10,7 +12,7 @@ The retrieval system uses a hybrid of keyword search (BM25) and semantic search 
 - Cross-Encoder Reranking
 - LLM Answer Generation (xiaomi/mimo-v2-flash)
 - Embedding Cache
-- CLI Interface
+- Streamlit UI
 - Evaluation Metrics (Precision@k, Recall@k & F1 Score)
 
 ## Data Format
@@ -43,20 +45,8 @@ uv sync
 OPENROUTER_API_KEY="<YOUR_API_KEY_HERE>"
 ```
 
-## CLI Usage
-
-### Ask a question
+- Run Streamlit:
 
 ```bash
-uv run main.py ask "What's the API instruction to create a post on a users profile for the networking site?"
+streamlit run main.py
 ```
-
-Use the **ask** command followed by your question in quotes to ask the assistant a question about a project.
-
-### Evaluation
-
-```bash
-uv run main.py evaluate -k 4
-```
-
-Use the **evaluate** command to evaluate the golden dataset using precision@k, recall@k and f1 score. The k parameter is optional and defaults to 4.
