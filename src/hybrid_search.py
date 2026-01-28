@@ -5,6 +5,7 @@ from src.semantic_search import SemanticSearch
 
 import os
 import pickle
+import streamlit as st
 from sentence_transformers import CrossEncoder
 
 
@@ -122,3 +123,13 @@ class HybridSearch:
         self.keyword_search.load()
         self.semantic_search.load()
         
+
+@st.cache_resource
+def load_or_build_hybrid_search() -> HybridSearch:
+    hybrid_search = HybridSearch()
+    try:
+        hybrid_search.load()
+    except FileNotFoundError:
+        hybrid_search.build()
+        hybrid_search.save()
+    return hybrid_search

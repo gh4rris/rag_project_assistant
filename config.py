@@ -14,7 +14,8 @@ PROMPTS = os.path.join(ROOT_PATH, "prompts")
 SYSTEM_PROMPT = os.path.join(PROMPTS, "system_prompt.txt")
 
 # LLM
-LLM_MODEL = "xiaomi/mimo-v2-flash:free"
+LLM_MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+OPENROUTER_URL = "https://openrouter.ai/api/v1"
 
 # KeywordSearch parameters
 BM25_K1 = 1.5
