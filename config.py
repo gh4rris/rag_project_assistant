@@ -9,6 +9,11 @@ GOLDEN_DATASET = os.path.join(DATA, "golden_dataset.json")
 CACHE = os.path.join(ROOT_PATH, "cache")
 TEST_CACHE = os.path.join(CACHE, "tests")
 PROMPTS = os.path.join(ROOT_PATH, "prompts")
+PAGES = os.path.join(ROOT_PATH, "pages")
+
+# Streamlit
+MAIN_PAGE = os.path.join(PAGES, "main_page.py")
+EVALUATION_PAGE = os.path.join(PAGES, "evaluation.py")
 
 # Prompts
 SYSTEM_PROMPT = os.path.join(PROMPTS, "system_prompt.txt")
