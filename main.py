@@ -7,14 +7,29 @@ import streamlit as st
 
 
 def main():
-    hybrid_search = load_or_build_hybrid_search()
-
     st.set_page_config(
         page_title="Rag Q&A Project Assistant",
         layout="centered"
     )
     st.title("Rag Q&A Project Assistant")
     st.caption("Ask questions about my portfolio projects.")
+
+    st.sidebar.title("Projects")
+    st.sidebar.subheader("loan_approval_ml")
+    st.sidebar.write("A supervised machine learning application that predicts loan approval likelihood")
+    st.sidebar.subheader("ar-united")
+    st.sidebar.write("A full-stack web application hub for animal rights groups and activists to network")
+    st.sidebar.subheader("vegan_youtube")
+    st.sidebar.write("Video data scraping & engagement analysis supervised learning project")
+
+    st.sidebar.title("Sample Questions:")
+    st.sidebar.write("What's the maximum size profile image that can be uploaded to ar-united?")
+    st.sidebar.write("How do I run the loan approval app locally?")
+    st.sidebar.write("What is the tech stack for the youtube analysis project?")
+    st.sidebar.write("What's the API instruction to create a post on a users profile on the networking site?")
+
+    with st.spinner("Loading Model..."):
+        hybrid_search = load_or_build_hybrid_search()
 
     st.subheader("API Key")
     api_key = st.text_input(
