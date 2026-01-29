@@ -12,6 +12,8 @@ st.title("Rag Q&A Project Assistant")
 st.caption("Ask questions about my portfolio projects.")
 
 st.sidebar.title("Projects")
+st.sidebar.subheader("rag_project_assistant")
+st.sidebar.write("A Retrieval-Augmented Generation assistant that answers questions about my portfolio projects")
 st.sidebar.subheader("loan_approval_ml")
 st.sidebar.write("A supervised machine learning application that predicts loan approval likelihood")
 st.sidebar.subheader("ar-united")
@@ -20,9 +22,10 @@ st.sidebar.subheader("vegan_youtube")
 st.sidebar.write("Video data scraping & engagement analysis supervised learning project")
 
 st.sidebar.title("Sample Questions:")
+st.sidebar.write("How is the RAG project evaluated?")
 st.sidebar.write("What's the maximum size profile image that can be uploaded to ar-united?")
 st.sidebar.write("How do I run the loan approval app locally?")
-st.sidebar.write("What is the tech stack for the youtube analysis project?")
+st.sidebar.write("What are the tech stacks for the youtube analysis project and loan approval project?")
 st.sidebar.write("What's the API instruction to create a post on a users profile on the networking site?")
 
 with st.spinner("Loading Model..."):

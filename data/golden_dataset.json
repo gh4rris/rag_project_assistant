@@ -1,34 +1,42 @@
 [
     {
-        "question": "What's the maximum size profile image that can be uploaded?",
-        "relevant_sections": [7]
+        "question": "How is the RAG project evaluated?",
+        "relevant_sections": [5]
     },
     {
-        "question": "What's the API instruction to create a post on a users profile?",
-        "relevant_sections": [11]
+        "question": "What's the maximum size profile image that can be uploaded to ar-united?",
+        "relevant_sections": [14]
+    },
+    {
+        "question": "What's the API instruction to create a post on a users profile on the networking site?",
+        "relevant_sections": [18]
     },
     {
         "question": "How do I run the loan approval app locally?",
-        "relevant_sections": [4]
-    }, 
-    {
-        "question": "How do I install the animal rights networking app?",
-        "relevant_sections": [9]
+        "relevant_sections": [11]
     },
     {
-        "question": "What is the tech stack?",
-        "relevant_sections": [3, 6, 8, 15]
+        "question": "How do I set up an API for the project assistant?",
+        "relevant_sections": [1, 4]
+    },
+    {
+        "question": "How do I install the animal rights networking app?",
+        "relevant_sections": [16]
+    },
+    {
+        "question": "What are the tech stacks for the youtube analysis project and loan approval project?",
+        "relevant_sections": [10, 22]
     },
     {
         "question": "What machine learning model was used?",
-        "relevant_sections": [1, 2, 16, 17, 23]
+        "relevant_sections": [8, 9, 23, 24, 30]
     },
     {
         "question": "Tell me something about loan_approval_ml",
-        "relevant_sections": [1, 2, 3, 4]
+        "relevant_sections": [8, 9, 10, 11]
     },
     {
         "question": "Tell me something about the loan approval project",
-        "relevant_sections": [1, 2, 3, 4]
+        "relevant_sections": [8, 9, 10, 11]
     }
 ]
