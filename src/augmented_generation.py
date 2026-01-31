@@ -1,4 +1,4 @@
-from config import LLM_MODEL, OPENROUTER_URL, SYSTEM_PROMPT
+from config import LLM_MODEL, OPENROUTER_URL, SYSTEM_PROMPT, FALLBACKS
 from src.utils import load_prompt
 
 from typing import Iterator
@@ -24,6 +24,9 @@ Answer:"""
     
     response = client.chat.completions.create(
         model=LLM_MODEL,
+        extra_body={
+            "models": FALLBACKS
+        },
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt}

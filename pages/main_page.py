@@ -63,6 +63,6 @@ if ask_button:
     with st.spinner("Generating answer..."):
         answer_placeholder = st.empty()
         complete_response = ""
-        for token in generate_answer(question,results, st.session_state["api_key"]):
+        for token in generate_answer(question, results, st.session_state["api_key"]):
             complete_response += token
             answer_placeholder.markdown(complete_response)

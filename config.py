@@ -20,6 +20,7 @@ SYSTEM_PROMPT = os.path.join(PROMPTS, "system_prompt.txt")
 
 # LLM
 LLM_MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+FALLBACKS = ["tngtech/deepseek-r1t2-chimera:free", "z-ai/glm-4.5-air:free"]
 OPENROUTER_URL = "https://openrouter.ai/api/v1"
 
 # KeywordSearch parameters

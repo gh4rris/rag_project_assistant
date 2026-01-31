@@ -13,6 +13,7 @@ The retrieval system uses a hybrid of keyword search (BM25) and semantic search 
 - Hybrid Retrival (Reciprocal Rank Fusion of keyword & semantic search)
 - Cross-Encoder Reranking
 - LLM Answer Generation (meta-llama/llama-3.3-70b-instruct)
+- Fallback models: tngtech/deepseek-r1t2-chimera & z-ai/glm-4.5-air
 - Embedding Cache
 - Streamlit UI
 - Evaluation Metrics (Precision@k, Recall@k & F1 Score)
